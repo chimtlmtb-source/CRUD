@@ -1,0 +1,28 @@
+{
+  "name": "CRUD_node",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Basic CRUD API using Node.js and Express",
+  "main": "src/app.js",
+  "keywords": [],
+  "author": "Mai Thi Linh Chi",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2"
+  },
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint \"src/**/*.{js,jsx}\"",
+    "lint:fix": "eslint \"src/**/*.{js,jsx}\" --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx,json,md}\""
+  }
+}
