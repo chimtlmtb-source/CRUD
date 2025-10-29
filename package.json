@@ -1,29 +1,28 @@
 {
-  "name": "crud_node",
+  "name": "my-node-api",
   "version": "1.0.0",
-  "type": "module",
-  "description": "Basic CRUD API using Node.js and Express",
   "main": "src/app.js",
-  "keywords": [],
-  "author": "Mai Thi Linh Chi",
-  "license": "ISC",
-  "dependencies": {
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "mongoose": "^8.19.2"
-  },
-  "devDependencies": {
-    "eslint": "^9.38.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.4",
-    "nodemon": "^3.1.10",
-    "prettier": "^3.6.2"
-  },
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "lint": "eslint \"src/**/*.{js,jsx}\"",
-    "lint:fix": "eslint \"src/**/*.{js,jsx}\" --fix",
-    "format": "prettier --write \"src/**/*.{js,jsx,json,md}\""
+    "lint": "eslint src/**/*.js",
+    "format": "prettier --write src/**/*.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.7.0",
+    "nodemailer": "^6.9.15",
+    "validator": "^13.12.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.3.3"
   }
 }

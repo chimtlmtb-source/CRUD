@@ -1,16 +1,22 @@
-import express from "express";
-import {
+const express = require('express');
+const {
   getUsers,
+  getUserById,
   createUser,
   updateUser,
   deleteUser,
-} from "../controllers/userController.js";
+} = require('../controllers/userController');
+const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.get("/", getUsers);
-router.post("/", createUser);
-router.put("/:id", updateUser);
-router.delete("/:id", deleteUser);
+// Áp dụng middleware xác thực
+router.use(authMiddleware);
 
-export default router;
+router.get('/', getUsers);
+router.get('/:id', getUserById);
+router.post('/', createUser);
+router.put('/:id', updateUser);
+router.delete('/:id', deleteUser);
+
+module.exports = router;
