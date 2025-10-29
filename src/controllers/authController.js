@@ -3,23 +3,19 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { sendResetEmail } = require('../utils/email');
 
-// 🔹 SIGNUP - tạo user & verify token (demo verify)
 const signup = async (req, res) => {
   try {
     const { name, email, password, age } = req.body;
 
-    // Check email tồn tại
     const existingUser = await User.findOne({ email });
     if (existingUser)
       return res.status(400).json({ message: 'Email already exists' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const verifyToken = jwt.sign(
-      { email },
-      process.env.JWT_SECRET,
-      { expiresIn: '1d' }, // link xác minh có hạn 1 ngày
-    );
+    const verifyToken = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: '1d',
+    });
 
     const user = new User({
       name,
@@ -33,7 +29,8 @@ const signup = async (req, res) => {
     const verifyUrl = `http://localhost:${process.env.PORT}/api/auth/verify/${verifyToken}`;
 
     res.status(201).json({
-      message: 'Đăng ký thành công. Vui lòng xác minh tài khoản.',
+      message:
+        'Dang ky thanh cong. Vui long kiem tra email de xac minh tai khoan.',
       verifyUrl,
       user: { id: user._id, name: user.name, email: user.email },
     });
@@ -66,7 +63,7 @@ const verifyAccount = async (req, res) => {
     user.verifyToken = null;
     await user.save();
 
-    res.json({ message: 'Tài khoản đã được xác minh thành công' });
+    res.json({ message: 'Tai khoan duoc xac minh thanh cong' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -95,7 +92,7 @@ const signin = async (req, res) => {
   }
 };
 
-// 🔹 FORGOT PASSWORD (tạo short token)
+// 🔹 FORGOT PASSWORD
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -105,18 +102,18 @@ const forgotPassword = async (req, res) => {
     const shortToken = jwt.sign(
       { userId: user._id },
       process.env.SHORT_TOKEN_SECRET,
-      { expiresIn: process.env.SHORT_TOKEN_EXPIRY }, // ví dụ 15m
+      { expiresIn: process.env.SHORT_TOKEN_EXPIRY },
     );
 
     user.resetToken = shortToken;
-    user.resetTokenExpire = Date.now() + 15 * 60 * 1000; // 15 phút
+    user.resetTokenExpire = Date.now() + 15 * 60 * 1000;
     await user.save();
 
     const resetLink = `http://localhost:${process.env.PORT}/api/auth/reset/${shortToken}`;
     sendResetEmail(email, resetLink);
 
     res.json({
-      message: 'Link đặt lại mật khẩu đã được log (demo)',
+      message: 'Link dat lai mat khau da duoc log (demo)',
       resetLink,
     });
   } catch (err) {
@@ -124,7 +121,7 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-// 🔹 RESET PASSWORD (dùng short token 1 lần)
+// 🔹 RESET PASSWORD
 const resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
@@ -142,7 +139,6 @@ const resetPassword = async (req, res) => {
     const user = await User.findById(decoded.userId);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    // Check short token có khớp & chưa hết hạn trong DB
     if (user.resetToken !== token || user.resetTokenExpire < Date.now())
       return res
         .status(400)
@@ -151,7 +147,6 @@ const resetPassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     user.password = hashedPassword;
 
-    // ✅ Invalidate short token sau khi reset
     user.resetToken = null;
     user.resetTokenExpire = null;
 

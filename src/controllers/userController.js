@@ -1,6 +1,6 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
-// Lấy tất cả user
+
 const getUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -10,7 +10,6 @@ const getUsers = async (req, res) => {
   }
 };
 
-// Lấy 1 user theo id
 const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -28,12 +27,10 @@ const createUser = async (req, res) => {
   try {
     const { name, email, password, age } = req.body;
 
-    // ✅ Validate các trường
     if (!name || !email || !password || !age) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
-    // ✅ Check email đã tồn tại chưa
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res
@@ -44,7 +41,6 @@ const createUser = async (req, res) => {
     // ✅ Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // ✅ Tạo user mới
     const newUser = new User({ name, email, password: hashedPassword, age });
     await newUser.save();
 
@@ -62,13 +58,11 @@ const updateUser = async (req, res) => {
     const { id } = req.params;
     const { name, email, age } = req.body;
 
-    // ✅ Tìm user cần update
     const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // ✅ Nếu user đổi email -> kiểm tra email mới có trùng ai khác không
     if (email && email !== user.email) {
       const emailExists = await User.findOne({ email });
       if (emailExists) {
@@ -77,7 +71,6 @@ const updateUser = async (req, res) => {
       user.email = email;
     }
 
-    // ✅ Update các field còn lại
     if (name) user.name = name;
     if (age) user.age = age;
 
@@ -89,7 +82,6 @@ const updateUser = async (req, res) => {
   }
 };
 
-// Xóa user
 const deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);

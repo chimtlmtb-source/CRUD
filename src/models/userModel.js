@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Age is required'],
       min: [0, 'Age must be >= 0'],
     },
-    // ✅ Thêm phần xác minh tài khoản
+
     isVerified: {
       type: Boolean,
       default: false,
@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    // ✅ Quản lý reset password
+
     resetToken: {
       type: String,
       default: null,

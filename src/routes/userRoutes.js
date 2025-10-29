@@ -10,7 +10,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Áp dụng middleware xác thực
 router.use(authMiddleware);
 
 router.get('/', getUsers);
