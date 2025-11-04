@@ -1,6 +1,18 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
+const refreshTokenSchema = new mongoose.Schema({
+  tokenHash: { type: String, required: true }, // hashed refresh token
+  familyId: { type: String, required: true }, // token family id
+  createdAt: { type: Date, default: Date.now },
+  expiresAt: { type: Date, required: true },
+  revoked: { type: Boolean, default: false },
+  replacedByToken: { type: String, default: null }, // optional: store token id or plain token (we'll store null)
+  createdByIp: { type: String, default: null },
+  revokedAt: { type: Date, default: null },
+  revokedByIp: { type: String, default: null },
+});
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -46,6 +58,12 @@ const userSchema = new mongoose.Schema(
     resetTokenExpire: {
       type: Date,
       default: null,
+    },
+
+    // refresh tokens stored as subdocuments (hashed)
+    refreshTokens: {
+      type: [refreshTokenSchema],
+      default: [],
     },
   },
   { timestamps: true },
