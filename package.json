@@ -1,14 +1,17 @@
 {
   "name": "my-node-api",
   "version": "1.0.0",
+  "type": "module",
   "main": "src/app.js",
   "scripts": {
+    "seed:roles": "node src/utils/seedRoles.js",
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "lint": "eslint src/**/*.js",
     "format": "prettier --write src/**/*.js"
   },
   "dependencies": {
+    "accesscontrol": "^2.2.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

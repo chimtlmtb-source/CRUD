@@ -1,72 +1,26 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
-
-const refreshTokenSchema = new mongoose.Schema({
-  tokenHash: { type: String, required: true }, // hashed refresh token
-  familyId: { type: String, required: true }, // token family id
-  createdAt: { type: Date, default: Date.now },
-  expiresAt: { type: Date, required: true },
-  revoked: { type: Boolean, default: false },
-  replacedByToken: { type: String, default: null }, // optional: store token id or plain token (we'll store null)
-  createdByIp: { type: String, default: null },
-  revokedAt: { type: Date, default: null },
-  revokedByIp: { type: String, default: null },
-});
+import mongoose from 'mongoose';
+import validator from 'validator';
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: [true, 'Name is required'],
-      trim: true,
-    },
+    name: { type: String, required: true, trim: true },
     email: {
       type: String,
-      required: [true, 'Email is required'],
+      required: true,
       unique: true,
-      trim: true,
       lowercase: true,
-      validate: {
-        validator: (value) => validator.isEmail(value),
-        message: 'Invalid email format',
-      },
+      validate: [validator.isEmail, 'Invalid email'],
     },
-    password: {
+    password: { type: String, required: true, minlength: 6 },
+    age: { type: Number, required: true },
+    role: {
       type: String,
-      required: [true, 'Password is required'],
-      minlength: [6, 'Password must be at least 6 characters'],
+      enum: ['ADMIN', 'SELLER', 'BUYER'],
+      default: 'BUYER',
     },
-    age: {
-      type: Number,
-      required: [true, 'Age is required'],
-      min: [0, 'Age must be >= 0'],
-    },
-
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-    verifyToken: {
-      type: String,
-      default: null,
-    },
-
-    resetToken: {
-      type: String,
-      default: null,
-    },
-    resetTokenExpire: {
-      type: Date,
-      default: null,
-    },
-
-    // refresh tokens stored as subdocuments (hashed)
-    refreshTokens: {
-      type: [refreshTokenSchema],
-      default: [],
-    },
+    isVerified: { type: Boolean, default: false },
   },
   { timestamps: true },
 );
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);
